@@ -32,6 +32,22 @@ def process_payment(payment_id, credit_card_data):
     # Ensuite, faire la mise à jour de la commande dans le Store Manager (en utilisant l'order_id)
     update_result = update_status_to_paid(payment_id)
     print(f"Updated order {update_result['order_id']} to paid={update_result}")
+
+    # REPONSE QUESTION 4 : 
+    order_update_url = "http://localhost:8080/store-api/orders" 
+    order_data = {
+        "order_id": update_result["order_id"],
+        "is_paid": True
+    }
+
+    try: 
+        response = requests.put(order_update_url, json=order_data)
+        response.raise_for_status()  
+        print(f"Order {update_result['order_id']} successfully updated in Store Manager.")
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to update order {update_result['order_id']} in Store Manager: {e}")
+    # Fin reponse 4
+     
     result = {
         "order_id": update_result["order_id"],
         "payment_id": update_result["payment_id"],
